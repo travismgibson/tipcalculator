@@ -11,22 +11,42 @@ import UIKit
 class TipViewController: UIViewController {
 
     @IBOutlet weak var tipLabel: UILabel!
-    
     @IBOutlet weak var totalLabel: UILabel!
     @IBOutlet weak var billField: UITextField!
     @IBOutlet weak var tipControl: UISegmentedControl!
     
+    let _defaults = UserDefaults.standard
+    let _rememberBillAmount = "rememberBillAmount"
+    let _rememberBillAmountDate = "rememberBillAmountDate"
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        if (rememberBillAmountDateAlreadyExist()) {
+            checkBillAmountTimeout();
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let defaults = UserDefaults.standard
-        let defaultTipIndex = defaults.integer(forKey: "defaultTip")
-        tipControl.selectedSegmentIndex = defaultTipIndex
+        
+        tipControl.selectedSegmentIndex = getDefaultTip();
         calcTipAmount();
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // If billField is empty or 0, do not store in UserDefault
+        let bill = Double(billField.text!) ?? 0
+        print ("bill: \(bill)")
+        if (bill != 0) {
+            setRememberBillAmount();
+        } else {
+            _defaults.removeObject(forKey: _rememberBillAmount)
+            _defaults.removeObject(forKey: _rememberBillAmountDate)
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -42,7 +62,24 @@ class TipViewController: UIViewController {
     @IBAction func calculateTip(_ sender: AnyObject) {
         calcTipAmount();
     }
- 
+
+    func getDefaultTip() -> Int {
+        return _defaults.integer(forKey: "defaultTip")
+    }
+    func getRememberBillAmount() -> Double {
+        return _defaults.object(forKey: _rememberBillAmount) as! Double
+    }
+
+    func getRememberBillAmountDate() -> Date {
+        return _defaults.object(forKey: _rememberBillAmountDate) as! Date
+    }
+    
+    
+    func rememberBillAmountDateAlreadyExist() -> Bool {
+        return _defaults.object(forKey: _rememberBillAmountDate)  != nil
+    }
+
+    
     func calcTipAmount()  {
         let tipPercentages = [0.18, 0.2, 0.25]
 
@@ -53,5 +90,24 @@ class TipViewController: UIViewController {
         tipLabel.text = String.init(format: "$%.2f",tip)
         totalLabel.text = String.init(format: "$%.2f",total)
     }
+    
+    func checkBillAmountTimeout() {
+        let dateComponentsFormatter = DateComponentsFormatter()
+        dateComponentsFormatter.unitsStyle = DateComponentsFormatter.UnitsStyle.full
+        let minsElapsed = Calendar.current.dateComponents([.minute], from: getRememberBillAmountDate(), to: Date()).minute ?? 0
+
+        if (minsElapsed < 10) {
+            billField.text = String(format:"%.2f", getRememberBillAmount())
+        }
+    }
+    
+    func setRememberBillAmount() {
+        let billAmount = Double(billField.text!) ?? 0
+        _defaults.set(billAmount, forKey: _rememberBillAmount)
+        _defaults.set(Date(), forKey: _rememberBillAmountDate)
+    }
+    
+    
+    
 }
 
