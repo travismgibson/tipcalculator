@@ -26,6 +26,9 @@ class TipViewController: UIViewController {
         if (rememberBillAmountDateAlreadyExist()) {
             checkBillAmountTimeout();
         }
+        
+        // Shows keyboard
+        billField.becomeFirstResponder()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -40,7 +43,6 @@ class TipViewController: UIViewController {
         
         // If billField is empty or 0, do not store in UserDefault
         let bill = Double(billField.text!) ?? 0
-        print ("bill: \(bill)")
         if (bill != 0) {
             setRememberBillAmount();
         } else {
@@ -56,11 +58,13 @@ class TipViewController: UIViewController {
 
 
     @IBAction func onTap(_ sender: AnyObject) {
-        view.endEditing(true)
+        // Commented to Always show keyboard
+        // view.endEditing(true)
     }
     
     @IBAction func calculateTip(_ sender: AnyObject) {
         calcTipAmount();
+//        billField.text = currencyStringFromNumber(num: bill)
     }
 
     func getDefaultTip() -> Int {
@@ -85,12 +89,21 @@ class TipViewController: UIViewController {
 
         let bill = Double(billField.text!) ?? 0
         let tip = bill * tipPercentages[tipControl.selectedSegmentIndex]
-        let total = bill + tip        
+        let total = bill + tip
         
         tipLabel.text = String.init(format: "$%.2f",tip)
         totalLabel.text = String.init(format: "$%.2f",total)
     }
     
+//    func currencyStringFromNumber(num: String) -> String {
+//        print ("Num: \(num)")
+//        let formatter = NumberFormatter()
+//        formatter.numberStyle = .currency
+//        formatter.locale = Locale.current // This is the default
+//        let billAmt = num as Double
+//        return formatter.string(from: billAmt)! 
+//    }
+
     func checkBillAmountTimeout() {
         let dateComponentsFormatter = DateComponentsFormatter()
         dateComponentsFormatter.unitsStyle = DateComponentsFormatter.UnitsStyle.full
