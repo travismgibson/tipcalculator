@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TipViewController: UIViewController {
+class TipViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var tipLabel: UILabel!
     @IBOutlet weak var totalLabel: UILabel!
@@ -18,11 +18,14 @@ class TipViewController: UIViewController {
     let _defaults = UserDefaults.standard
     let _rememberBillAmount = "rememberBillAmount"
     let _rememberBillAmountDate = "rememberBillAmountDate"
-
-
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Setup billField delegate to format decimal field
+        billField.delegate = self
+
         if (rememberBillAmountDateAlreadyExist()) {
             checkBillAmountTimeout();
         }
@@ -33,7 +36,7 @@ class TipViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         tipControl.selectedSegmentIndex = getDefaultTip();
         calcTipAmount();
     }
@@ -64,7 +67,6 @@ class TipViewController: UIViewController {
     
     @IBAction func calculateTip(_ sender: AnyObject) {
         calcTipAmount();
-//        billField.text = currencyStringFromNumber(num: bill)
     }
 
     func getDefaultTip() -> Int {
@@ -94,15 +96,6 @@ class TipViewController: UIViewController {
         tipLabel.text = String.init(format: "$%.2f",tip)
         totalLabel.text = String.init(format: "$%.2f",total)
     }
-    
-//    func currencyStringFromNumber(num: String) -> String {
-//        print ("Num: \(num)")
-//        let formatter = NumberFormatter()
-//        formatter.numberStyle = .currency
-//        formatter.locale = Locale.current // This is the default
-//        let billAmt = num as Double
-//        return formatter.string(from: billAmt)! 
-//    }
 
     func checkBillAmountTimeout() {
         let dateComponentsFormatter = DateComponentsFormatter()
@@ -120,7 +113,35 @@ class TipViewController: UIViewController {
         _defaults.set(Date(), forKey: _rememberBillAmountDate)
     }
     
-    
+    // Textfield delegate
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool { // return NO to not change text
+        
+        switch string {
+        case "0","1","2","3","4","5","6","7","8","9":
+            return true
+        case ".": // only allow 1 decimal place
+            let textString : String = textField.text!
+            let array = Array(textString.characters)
+            var decimalCount = 0
+            for character in array {
+                if character == "." {
+                    decimalCount += 1
+                }
+            }
+            
+            if decimalCount == 1 {
+                return false
+            } else {
+                return true
+            }
+        default:
+            let array = Array(string.characters)
+            if array.count == 0 {
+                return true
+            }
+            return false
+        }
+    }
     
 }
 
