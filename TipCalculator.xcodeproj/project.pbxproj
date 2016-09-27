@@ -15,6 +15,7 @@
 		23176BC01D9445C100DE97ED /* TipCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23176BBF1D9445C100DE97ED /* TipCalculatorTests.swift */; };
 		23176BCB1D9445C100DE97ED /* TipCalculatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23176BCA1D9445C100DE97ED /* TipCalculatorUITests.swift */; };
 		23176BD91D945D9400DE97ED /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23176BD81D945D9400DE97ED /* SettingsViewController.swift */; };
+		23F9C04C1D99D6FC00541925 /* tip_table.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 23F9C04B1D99D6FC00541925 /* tip_table.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		23176BCA1D9445C100DE97ED /* TipCalculatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipCalculatorUITests.swift; sourceTree = "<group>"; };
 		23176BCC1D9445C100DE97ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23176BD81D945D9400DE97ED /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		23F9C04B1D99D6FC00541925 /* tip_table.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tip_table.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 		23176BA91D9445C100DE97ED /* TipCalculator */ = {
 			isa = PBXGroup;
 			children = (
+				23F9C04A1D99D6F100541925 /* images */,
 				23176BAA1D9445C100DE97ED /* AppDelegate.swift */,
 				23176BAC1D9445C100DE97ED /* TipViewController.swift */,
 				23176BAE1D9445C100DE97ED /* Main.storyboard */,
@@ -126,6 +129,14 @@
 				23176BCC1D9445C100DE97ED /* Info.plist */,
 			);
 			path = TipCalculatorUITests;
+			sourceTree = "<group>";
+		};
+		23F9C04A1D99D6F100541925 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				23F9C04B1D99D6FC00541925 /* tip_table.jpg */,
+			);
+			name = images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -235,6 +246,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23F9C04C1D99D6FC00541925 /* tip_table.jpg in Resources */,
 				23176BB51D9445C100DE97ED /* LaunchScreen.storyboard in Resources */,
 				23176BB21D9445C100DE97ED /* Assets.xcassets in Resources */,
 				23176BB01D9445C100DE97ED /* Main.storyboard in Resources */,

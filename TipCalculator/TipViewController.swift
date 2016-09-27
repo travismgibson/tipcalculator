@@ -15,13 +15,22 @@ class TipViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var billField: UITextField!
     @IBOutlet weak var tipControl: UISegmentedControl!
     
+    @IBOutlet weak var splitSteeper: UIStepper!
+    @IBOutlet weak var splitValue: UILabel!
+    @IBOutlet weak var splitPersonValue: UILabel!
+    
     let _defaults = UserDefaults.standard
     let _rememberBillAmount = "rememberBillAmount"
     let _rememberBillAmountDate = "rememberBillAmountDate"
+    let _rememberSplitNum = "rememberSplitNum"
     
+    let PLACEHOLDER_TEXT = "$"
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Shows keyboard
+        billField.becomeFirstResponder()
         
         // Setup billField delegate to format decimal field
         billField.delegate = self
@@ -30,8 +39,8 @@ class TipViewController: UIViewController, UITextFieldDelegate {
             checkBillAmountTimeout();
         }
         
-        // Shows keyboard
-        billField.becomeFirstResponder()
+        // Adds Dollar sign placecholder
+        billField?.placeholder = PLACEHOLDER_TEXT
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -69,6 +78,12 @@ class TipViewController: UIViewController, UITextFieldDelegate {
         calcTipAmount();
     }
 
+    @IBAction func splitStepperAction(_ sender: AnyObject) {
+        splitValue.text = "\(Int(splitSteeper.value))"
+        calcTipAmount();
+    }
+
+    
     func getDefaultTip() -> Int {
         return _defaults.integer(forKey: "defaultTip")
     }
@@ -80,6 +95,13 @@ class TipViewController: UIViewController, UITextFieldDelegate {
         return _defaults.object(forKey: _rememberBillAmountDate) as! Date
     }
     
+    func getRememberSplitNum() -> String {
+        if ((_defaults.object(forKey: _rememberSplitNum)) != nil) {
+            return _defaults.object(forKey: _rememberSplitNum) as! String
+        } else {
+            return "1"
+        }
+    }
     
     func rememberBillAmountDateAlreadyExist() -> Bool {
         return _defaults.object(forKey: _rememberBillAmountDate)  != nil
@@ -92,9 +114,12 @@ class TipViewController: UIViewController, UITextFieldDelegate {
         let bill = Double(billField.text!) ?? 0
         let tip = bill * tipPercentages[tipControl.selectedSegmentIndex]
         let total = bill + tip
+        let numOfPeopleSplitting = Double(splitValue.text!) ?? 0
+        let splitTotal = total / numOfPeopleSplitting
         
         tipLabel.text = String.init(format: "$%.2f",tip)
         totalLabel.text = String.init(format: "$%.2f",total)
+        splitPersonValue.text = String.init(format: "$%.2f",splitTotal)
     }
 
     func checkBillAmountTimeout() {
@@ -104,6 +129,7 @@ class TipViewController: UIViewController, UITextFieldDelegate {
 
         if (minsElapsed < 10) {
             billField.text = String(format:"%.2f", getRememberBillAmount())
+            splitValue.text = getRememberSplitNum()
         }
     }
     
@@ -111,6 +137,7 @@ class TipViewController: UIViewController, UITextFieldDelegate {
         let billAmount = Double(billField.text!) ?? 0
         _defaults.set(billAmount, forKey: _rememberBillAmount)
         _defaults.set(Date(), forKey: _rememberBillAmountDate)
+        _defaults.set(splitValue.text, forKey: _rememberSplitNum)
     }
     
     // Textfield delegate
@@ -142,6 +169,6 @@ class TipViewController: UIViewController, UITextFieldDelegate {
             return false
         }
     }
-    
+
 }
 
